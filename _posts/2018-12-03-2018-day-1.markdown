@@ -1,0 +1,65 @@
+---
+layout: post
+title: "2018 Day 1"
+date: "2018-12-01 09:28:07 -0500"
+excerpt: "Getting back into Advent of Code after being scared in 2017."
+---
+
+I'm trying [Advent of Code](//adventofcode.com) thanks to prompting by [Rocky](//twitter.com/rockyroer). I had looked at the 2017 challenges, but felt super overwhelmed by the complexity of the challenges. A year later, I felt...okay...with starting. Here's my Day 1 solution.
+
+## Part 1
+Sum all frequencies
+
+```python
+def sumall(list):
+    # Start at 0
+
+    sum = 0
+
+    # Loop each value in the list, adding to the sum
+
+    for item in list:
+        sum += item
+
+    return sum
+
+sum = sumall(raw)
+print('Frequency: ', sum) # 529
+```
+
+## Part 2
+I started with a list that was checked with each addition, but it took more than two minutes and still hadn't returned a value. After some refreshing my Python knowledge, I switched to a set because it exits on a duplicate value.
+
+```python
+seen = set()
+# Use cycle to loop the input list as many times as needed
+
+from itertools import cycle
+
+def sum(list):
+
+    # Start at 0
+
+    sum = 0
+
+    # loop the list as many times as necessary
+
+    for n in cycle(list):
+
+
+        # Create the sum and check it against { seen }
+
+        # If it is there, return the value.
+        sum += n
+        if sum in seen:
+            return sum
+
+        # If not there, add the value to the set and continue
+
+        else:
+            seen.add(sum)
+
+repeat = sum(raw)
+print('First repeat: ', repeat) # 464
+
+```

@@ -60,11 +60,7 @@ hr {
   border-bottom: 2px solid transparent;
 
 
-  &:hover,
-  &:focus,
-  &:active {
-    border-bottom: 2px solid $blue-color;
-  }
+  
 }
 
 .site-header {
@@ -139,6 +135,7 @@ hr {
 
   a {
     color: $action-color;
+    text-decoration: underline;
   }
 
   .article-title {
