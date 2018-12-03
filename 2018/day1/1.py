@@ -960,7 +960,6 @@ seen = set()
 from itertools import cycle
 
 def sum(list):
-    loop = 1
     sum = 0
     # loop the list as many times as necessary
     for n in cycle(list):
@@ -971,7 +970,16 @@ def sum(list):
         else:
             seen.add(sum)
 
+def sumall(list):
+    sum = 0
 
+    for item in list:
+        sum += item
 
-total = sum(raw)
-print('First repeat: ', total)
+    return sum
+
+repeat = sum(raw)
+print('First repeat: ', repeat)
+
+sum = sumall(raw)
+print('Frequency: ', sum)
