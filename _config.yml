@@ -2,7 +2,7 @@
 title_left    : "Advent of Code"
 title_right   : "space" # default: ""
 description   : "Documenting Advent of Code solutions"
-url           : https://aoc.ohheybrian.com # site url
+url           : "//dev.ohheybrian.com/aoc" # site url
 baseurl       : "" # apply repo name like "/myproject" if used under gh-pages branch, else (under master branch) just leave empty/blank
 cover         : "" # image uri like logo/cover image for site seo
 
