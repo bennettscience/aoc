@@ -1,0 +1,88 @@
+---
+layout: post
+title: "2018 Day 3"
+date: "2018-12-04 22:12:17 -0500"
+excerpt: "In which I try too hard to use math and have to look at an example solution."
+---
+
+This puzzle really cooked my brain. I got super deep into the graphing and trying to parse out the min and max coordinates of each square, comparing their size and then finding the difference between overlap points...it was a mess.
+
+I finally caved and looked at the [subreddit](//reddit.com/r/adventofcode) where people are posting for help as well as their solutions. Years ago, I started (but never finished) _Learn Python the Hard Way_, which involved a lot of reading, retyping, and commenting code to learn what's happening. I found a straight Python solution (except for the regular expressions module) and started commenting.
+
+I don't think like a programmer yet. The solution, on seeing it, was so _simple_ in application...I need to think bigger picture, back away from details, and look for patterns rather than identify specifc data points.
+
+Here's my annotated, functional Part 1 based on the question from [MrSquigy](https://www.reddit.com/r/adventofcode/comments/a35j5v/2018_day_3_part_1_python_3_im_confused_at_why/)
+
+```python
+import re
+
+# set the size of the fabric
+SIZE = 1000
+
+# set the default overlap
+
+overlap = 0
+
+# Get the text as a list
+
+with open('input.txt') as f:
+    input = f.readlines()
+
+# loop over each input
+
+for i in range(len(input)):
+    dis(input[i])
+
+    # use regex to get three capture groups: ID, position, size
+
+    regex = r'^#(\d+)\s@\s(\d+\,\d+):\s(\d+x\d+)'
+    claim = re.match(regex, input[i])
+
+    # Use .group() method for Python < 3.6
+
+    id = claim.group(1)
+
+    # Find square position in the grid as integers
+
+    pos = claim.group(2).split(',')
+    pos[0] = int(pos[0])
+    pos[1] = int(pos[1])
+
+    # Find the size of the input as integers
+
+    size = claim.group(3).split('x')
+    size[0] = int(size[0])
+    size[1] = int(size[1])
+
+    # Set an X search range start and end index
+
+    # start = position 0 (x position) and x_max (start + width)
+
+    for x in range(pos[0], (pos[0] + size[0])):
+
+        # Set an Y search range start and end index
+
+        # start = position 0 (y position) and y_max (start + height)
+
+        for y in range(pos[1], (pos[1] + size[1])):
+
+            # count that square as used
+
+            fabric[x][y] += 1;
+
+# Take the /entire/ fabric now and loop width and height
+
+for x in range(SIZE):
+    for y in range(SIZE):
+
+        # if that spot has n > 1, there is an overlap /somewhere/
+
+        # the actual overlap doesn't matter.
+
+        if fabric[x][y] > 1:
+            overlap += 1
+
+print('There are', overlap, 'overlaps.') # 113716
+```
+
+I still need to work on Part 2. I'll update and come back to this if I find a solution.
