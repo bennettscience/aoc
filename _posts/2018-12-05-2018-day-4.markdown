@@ -1,0 +1,197 @@
+---
+layout: post
+title: "2018 Day 4"
+date: "2018-12-05 21:29:55 -0500"
+excerpt: "New plan: I don't have enough skill to do a lot of these."
+---
+Day three is when I realized that my skill was being pushed really, really hard. Day 4 is when I realized that I don't have enough background, technical, or experiential knowledge to do many of these challenges on my own. I started to feel pretty discouraged at the thought of only making it two days on my own. So, I have a new plan.
+
+I mentioned _Learn Python the Hard Way_ in yesterday's post. A lot of that course was reading, describing, and copying code to help build skill in typing quickly and accurately, debugging, and building general programmatic thinking skills. I'm going to head that way in my thinking about the rest of Advent of Code rather than digging myself into a pit of self-pity for not being good enough to do everything on my own.
+
+For each day, I'm going to do an outline on paper of what I _think_ should happen. I can usually break a problem down, but I lack the knowledge of what can help me accomplish those tasks (Python modules in particular). Day 4 helped me learn several new things in part 1 alone:
+
+- The `attr` module for building Classes that make sense
+- Writing good regex doesn't mean it's super pretty
+- Python's `datetime` module is just like Javascript's `moment.js`, so I should use that. A lot.
+- The `Counter` class in Python is pretty dope.
+
+I'm going to start each challenge by plotting it out by hand in my notebook. I'll include a picture with every challenge to make sure I really do it. Then, I'll do my best to start up some code. But rather than get frustrated and spin wheels, I'm going to be okay with looking at other examples, annotating, and then working to implement it myself, using the example as a guide.
+
+## Day 4 notebook
+![Outline of the day four challenge in chicken scratch.](https://photos.ohheybrian.com/uploads/big/fecd4933e67661d888217fcba079ccf5.jpg)
+
+For today's challenge, I found a helpful example from [Byron Peebles](https://github.com/bpeebles) on [GitHub](https://github.com/bpeebles/aoc2018/blob/master/day4/guard.py). I hadn't used Classes at all in Python (not to mention any of the modules) and reading, emulating, and annotating his code was immensely helpful. My final script with notes is below.
+
+```python
+# for help: https://github.com/bpeebles/aoc2018/blob/master/day4/guard.py
+
+import re
+import attr
+import datetime
+from collections import defaultdict, Counter
+
+# Create a guard which holds all of that guard's info
+# `attr.s` is the key to trigger the attr module to do it's magic
+
+@attr.s
+class Guard:
+
+    # I spent a long time reading the attr documentation trying to figure out what the
+
+    # .ib() method stood for. Then I realized it was a pun and I felt dumb.
+
+    # Create atts for the guard ID and the days each guard appears
+
+    guard_id = attr.ib()
+    days = attr.ib()
+
+    # store all the minutes the guard is asleep
+
+    def minutes(self):
+
+        # Take the time input for the given day in [days]
+
+        for time, day in self.days.items():
+
+            # Define a var --> sleep for each day
+
+            for sleep in day:
+
+                # Break each sleep into minutes and calculate the difference between the two
+
+                for minutes in range(sleep[0], sleep[1]):
+                    yield minutes
+
+    # helper function to count all minutes
+
+    def total_asleep(self):
+
+        # add things up by calling minutes
+
+        # I still don't really understand this syntax
+
+        return sum(1 for _ in self.minutes())
+
+    # figure out which minute is slept the most by a given guard
+
+    def most_common_minute(self):
+
+        # use a counter for fast tallying
+
+        count = Counter(self.minutes())
+
+        #get the most common minute from the Counter
+
+        return count.most_common(1)[0]
+
+# open and sort the list
+
+with open('input.txt') as f:
+    input = f.readlines()
+    sorted = sorted(input)
+
+# Create a dictionary to hold all of the guards
+
+guards = {}
+
+# Loop through each item in the sorted array
+
+for entry in sorted:
+
+    # get the timestring from the entry
+
+    time_string = re.search(r'(\d+)-(\d+)-(\d+)\s(\d+)\:(\d+)', entry)
+
+    # This was a new module for me. I'll definitely be pulling it in again
+
+    time = datetime.datetime(year=int(time_string.group(1)), month=int(time_string.group(2)), day=int(time_string.group(3)), hour=int(time_string.group(4)), minute=int(time_string.group(5)))
+
+    # I didn't know you could do string matching like this in python. Nicer than needing regex...again.
+
+    if 'Guard' in entry:
+        search = re.search(r'#(\d+)', entry)
+        id = search.group(1)
+    elif 'falls' in entry:
+
+        # Set the time a guard falls asleep
+
+        sleeping = time
+    elif 'wakes' in entry:
+
+        # Push an object to the dictionary if the guard hasn't been added yet.
+
+        if id not in guards:
+
+            # defaultdict allows you to push a list to a key in the Class.
+
+            guards[id] = Guard(guard_id=id, days=defaultdict(list))
+
+        # Add the newly created guard object to the master list.
+
+        guards[id].days[time.date()].append((sleeping.minute, time.minute))
+
+
+# part 1 solution
+
+# define a variable for the most minutes
+
+most_minutes = -1
+
+# define the sleepiest guard
+
+sleepiest_guard = None
+
+# For each ID as a guard object in the guards list:
+
+for id, guard in guards.items():
+
+    # Calculate the /total/ time a guard is asleep
+
+    asleep = guard.total_asleep()
+
+    # if it's bigger than the current most_minutes, reset
+
+    if asleep > most:
+        most_minutes = asleep
+        sleepiest_guard = guard
+
+print(sleepiest_guard) #3491
+
+# For that sleepy guard, find the most common minute they were asleep
+
+common_minute = sleepiest_guard.most_common_minute()
+print(common_minute)
+print(int(sleepiest_guard.guard_id) * common_minute[0])
+
+#part 2
+
+# most instances of a minute
+
+most = None
+
+# n times a guard slept during that minute
+
+most_times = -1
+
+# define the tired guard
+
+sleepiest_guard = None  
+
+# for each ID, loop the guards and open the guard object
+
+for id, guard in guards.items():
+
+    # Define two variables from the returned tuple: minute and # of events (times asleep)
+
+    min, events = guard.most_common_minute()
+
+    # If the events is more than the current most, set a bunch of variables
+
+    if events > most_times:
+        most = min
+        most_times = events
+        sleepiest_guard = guard.guard_id
+
+print(sleepiest_guard, most, most_times) # Guard 1327, min 24, 17 times asleep
+print(int(sleepiest_guard) * most) # 31848
+```
